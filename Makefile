@@ -7,12 +7,19 @@ OBJDUMP := rust-objdump --arch-name=riscv64
 OBJCOPY := rust-objcopy --binary-architecture=riscv64
 PY := python3
 
+BASE ?= 0
 TEST ?= 0
 ifeq ($(TEST), 0)
 	APPS :=  $(filter-out $(wildcard $(APP_DIR)/ch*.rs), $(wildcard $(APP_DIR)/*.rs))
+else ifeq ($(TEST), 1)
+	APPS :=  $(wildcard $(APP_DIR)/ch*.rs)
+else ifeq ($(BASE), 0)
+	APPS := $(wildcard $(APP_DIR)/ch$(TEST)*.rs)
 else
-	APPS :=  $(wildcard $(APP_DIR)/ch$(TEST)*.rs)
+	CHAPTERS := $(shell seq ${BASE} ${TEST})
+	APPS := $(foreach CH, $(CHAPTERS), $(wildcard $(APP_DIR)/ch$(CH)*.rs))
 endif
+
 ELFS := $(patsubst $(APP_DIR)/%.rs, $(TARGET_DIR)/%, $(APPS))
 
 binary:
