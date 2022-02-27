@@ -9,14 +9,14 @@ PY := python3
 
 TEST ?= 0
 ifeq ($(TEST), 0)
-	APPS :=  $(filter-out $(wildcard $(APP_DIR)/test*.rs), $(wildcard $(APP_DIR)/*.rs))
+	APPS :=  $(filter-out $(wildcard $(APP_DIR)/ch*.rs), $(wildcard $(APP_DIR)/*.rs))
 else
-	APPS :=  $(wildcard $(APP_DIR)/test$(TEST)*.rs)
+	APPS :=  $(wildcard $(APP_DIR)/ch$(TEST)*.rs)
 endif
 ELFS := $(patsubst $(APP_DIR)/%.rs, $(TARGET_DIR)/%, $(APPS))
 
 binary:
- #	@echo $(ELFS)
+	@echo $(ELFS)
 	@cargo build --release
 	@$(foreach elf, $(ELFS), \
 		$(OBJCOPY) $(elf) --strip-all -O binary $(patsubst $(TARGET_DIR)/%, $(TARGET_DIR)/%.bin, $(elf)); \
@@ -27,8 +27,8 @@ pre:
 	@mkdir -p $(BUILD_DIR)/elf/
 	@mkdir -p $(BUILD_DIR)/app/
 	@$(foreach t, $(APPS), cp $(t) $(BUILD_DIR)/app/;)
-	
-build: clean pre binary 
+
+build: clean pre binary
 	@$(foreach t, $(ELFS), cp $(t).bin $(BUILD_DIR)/bin/;)
 	@$(foreach t, $(ELFS), cp $(t).elf $(BUILD_DIR)/elf/;)
 
