@@ -6,8 +6,6 @@ use user_lib::{
     get_time, println, task_info, TaskInfo, SYSCALL_EXIT, SYSCALL_GETTIMEOFDAY, SYSCALL_TASK_INFO,
     SYSCALL_WRITE, SYSCALL_YIELD,
 };
-use user_lib::{write, STDOUT};
-const DATA_STRING: &str = "string from data section\n";
 
 #[no_mangle]
 pub fn main() -> usize {
