@@ -29,24 +29,9 @@ pub fn handle_alloc_error(layout: core::alloc::Layout) -> ! {
     panic!("Heap allocation error, layout = {:?}", layout);
 }
 
-fn clear_bss() {
-    extern "C" {
-        fn start_bss();
-        fn end_bss();
-    }
-    unsafe {
-        core::slice::from_raw_parts_mut(
-            start_bss as usize as *mut u8,
-            end_bss as usize - start_bss as usize,
-        )
-        .fill(0);
-    }
-}
-
 #[no_mangle]
 #[link_section = ".text.entry"]
 pub extern "C" fn _start() -> ! {
-    clear_bss();
     unsafe {
         HEAP.lock()
             .init(HEAP_SPACE.as_ptr() as usize, USER_HEAP_SIZE);
@@ -80,6 +65,43 @@ pub struct TimeVal {
 impl TimeVal {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum TaskStatus {
+    UnInit,
+    Ready,
+    Running,
+    Exited,
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct SyscallInfo {
+    pub id: usize,
+    pub times: usize,
+}
+
+const MAX_SYSCALL_NUM: usize = 5;
+
+#[derive(Debug)]
+pub struct TaskInfo {
+    pub id: usize,
+    pub status: TaskStatus,
+    pub syscall_ids: [usize; MAX_SYSCALL_NUM],
+    pub syscall_times: [usize; MAX_SYSCALL_NUM],
+    pub time: usize,
+}
+
+impl TaskInfo {
+    pub fn new() -> Self {
+        TaskInfo {
+            id: 0,
+            status: TaskStatus::UnInit,
+            syscall_ids: [0; MAX_SYSCALL_NUM],
+            syscall_times: [0; MAX_SYSCALL_NUM],
+            time: 0,
+        }
     }
 }
 
@@ -250,4 +272,8 @@ pub fn dup(fd: usize) -> isize {
 }
 pub fn pipe(pipe_fd: &mut [usize]) -> isize {
     sys_pipe(pipe_fd)
+}
+
+pub fn task_info(info: &TaskInfo) -> isize {
+    sys_task_info(info)
 }
