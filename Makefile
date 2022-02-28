@@ -16,15 +16,20 @@ else ifeq ($(TEST), 1)
 else ifeq ($(BASE), 0)
 	APPS := $(wildcard $(APP_DIR)/ch$(TEST)*.rs)
 else
-	CHAPTERS := $(shell seq ${BASE} ${TEST})
-	APPS := $(foreach CH, $(CHAPTERS), $(wildcard $(APP_DIR)/ch$(CH)*.rs))
+	TESTS := $(shell seq ${BASE} ${TEST})
+	APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)*.rs))
 endif
 
 ELFS := $(patsubst $(APP_DIR)/%.rs, $(TARGET_DIR)/%, $(APPS))
+CHAPTER ?= 0
 
 binary:
 	@echo $(ELFS)
-	@cargo build --release
+	@if [ ${CHAPTER} -gt 3 ]; then \
+		cargo build --release ;\
+	else \
+		CHAPTER=$(CHAPTER) python3 build.py ;\
+	fi
 	@$(foreach elf, $(ELFS), \
 		$(OBJCOPY) $(elf) --strip-all -O binary $(patsubst $(TARGET_DIR)/%, $(TARGET_DIR)/%.bin, $(elf)); \
 		cp $(elf) $(patsubst $(TARGET_DIR)/%, $(TARGET_DIR)/%.elf, $(elf));)
