@@ -18,7 +18,7 @@ else
 	TESTS := $(shell seq ${BASE} ${TEST})
 	APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)_*.rs))
 	ifeq ($(BASE), 1)
-		APPS += $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)b_.rs))
+		APPS += $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)b_*.rs))
 	endif
 endif
 
@@ -36,15 +36,21 @@ binary:
 		$(OBJCOPY) $(elf) --strip-all -O binary $(patsubst $(TARGET_DIR)/%, $(TARGET_DIR)/%.bin, $(elf)); \
 		cp $(elf) $(patsubst $(TARGET_DIR)/%, $(TARGET_DIR)/%.elf, $(elf));)
 
+disasm:
+	@$(foreach elf, $(ELFS), \
+		$(OBJDUMP) $(elf) -S > $(patsubst $(TARGET_DIR)/%, $(TARGET_DIR)/%.asm, $(elf));)
+
 pre:
 	@mkdir -p $(BUILD_DIR)/bin/
 	@mkdir -p $(BUILD_DIR)/elf/
 	@mkdir -p $(BUILD_DIR)/app/
+	@mkdir -p $(BUILD_DIR)/asm/
 	@$(foreach t, $(APPS), cp $(t) $(BUILD_DIR)/app/;)
 
 build: clean pre binary
 	@$(foreach t, $(ELFS), cp $(t).bin $(BUILD_DIR)/bin/;)
 	@$(foreach t, $(ELFS), cp $(t).elf $(BUILD_DIR)/elf/;)
+	@$(foreach t, $(ELFS), cp $(t).asm $(BUILD_DIR)/asm/;)
 
 clean:
 	@cargo clean
