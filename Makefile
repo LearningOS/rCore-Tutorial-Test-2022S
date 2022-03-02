@@ -13,11 +13,13 @@ ifeq ($(TEST), 0)
 	APPS :=  $(filter-out $(wildcard $(APP_DIR)/ch*.rs), $(wildcard $(APP_DIR)/*.rs))
 else ifeq ($(TEST), 1)
 	APPS :=  $(wildcard $(APP_DIR)/ch*.rs)
-else ifeq ($(BASE), 0)
 	APPS := $(wildcard $(APP_DIR)/ch$(TEST)*.rs)
 else
 	TESTS := $(shell seq ${BASE} ${TEST})
-	APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)*.rs))
+	APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)_*.rs))
+	ifeq ($(BASE), 1)
+		APPS += $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)b_.rs))
+	endif
 endif
 
 ELFS := $(patsubst $(APP_DIR)/%.rs, $(TARGET_DIR)/%, $(APPS))
