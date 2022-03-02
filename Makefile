@@ -9,16 +9,18 @@ PY := python3
 
 BASE ?= 0
 TEST ?= 0
-ifeq ($(TEST), 0)
+ifeq ($(TEST), 0) # No test, deprecated, previously used in v3
 	APPS :=  $(filter-out $(wildcard $(APP_DIR)/ch*.rs), $(wildcard $(APP_DIR)/*.rs))
-else ifeq ($(TEST), 1)
+else ifeq ($(TEST), 1) # All test
 	APPS :=  $(wildcard $(APP_DIR)/ch*.rs)
-	APPS := $(wildcard $(APP_DIR)/ch$(TEST)*.rs)
 else
 	TESTS := $(shell seq ${BASE} ${TEST})
-	APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)_*.rs))
-	ifeq ($(BASE), 1)
-		APPS += $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)b_*.rs))
+	ifeq ($(BASE), 0) # Normal tests only
+		APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)_*.rs))
+	else ifeq ($(BASE), 1) # Basic tests only
+		APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)b_*.rs))
+	else # Basic and normal
+		APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)*.rs))
 	endif
 endif
 
@@ -39,6 +41,7 @@ binary:
 disasm:
 	@$(foreach elf, $(ELFS), \
 		$(OBJDUMP) $(elf) -S > $(patsubst $(TARGET_DIR)/%, $(TARGET_DIR)/%.asm, $(elf));)
+	@$(foreach t, $(ELFS), cp $(t).asm $(BUILD_DIR)/asm/;)
 
 pre:
 	@mkdir -p $(BUILD_DIR)/bin/
@@ -50,7 +53,6 @@ pre:
 build: clean pre binary
 	@$(foreach t, $(ELFS), cp $(t).bin $(BUILD_DIR)/bin/;)
 	@$(foreach t, $(ELFS), cp $(t).elf $(BUILD_DIR)/elf/;)
-	@$(foreach t, $(ELFS), cp $(t).asm $(BUILD_DIR)/asm/;)
 
 clean:
 	@cargo clean
