@@ -97,13 +97,11 @@ pub struct SyscallInfo {
     pub times: usize,
 }
 
-const MAX_SYSCALL_NUM: usize = 5;
+const MAX_SYSCALL_NUM: usize = 500;
 
 #[derive(Debug)]
 pub struct TaskInfo {
-    pub id: usize,
     pub status: TaskStatus,
-    pub syscall_ids: [usize; MAX_SYSCALL_NUM],
     pub syscall_times: [usize; MAX_SYSCALL_NUM],
     pub time: usize,
 }
@@ -111,9 +109,7 @@ pub struct TaskInfo {
 impl TaskInfo {
     pub fn new() -> Self {
         TaskInfo {
-            id: 0,
             status: TaskStatus::UnInit,
-            syscall_ids: [0; MAX_SYSCALL_NUM],
             syscall_times: [0; MAX_SYSCALL_NUM],
             time: 0,
         }
