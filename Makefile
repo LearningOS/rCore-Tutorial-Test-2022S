@@ -8,7 +8,9 @@ OBJCOPY := rust-objcopy --binary-architecture=riscv64
 PY := python3
 
 BASE ?= 0
-TEST ?= 1
+CHAPTER ?= 0
+TEST ?= CHAPTER
+
 ifeq ($(TEST), 0) # No test, deprecated, previously used in v3
 	APPS :=  $(filter-out $(wildcard $(APP_DIR)/ch*.rs), $(wildcard $(APP_DIR)/*.rs))
 else ifeq ($(TEST), 1) # All test
@@ -25,7 +27,6 @@ else
 endif
 
 ELFS := $(patsubst $(APP_DIR)/%.rs, $(TARGET_DIR)/%, $(APPS))
-CHAPTER ?= 0
 
 binary:
 	@echo $(ELFS)
@@ -58,4 +59,6 @@ clean:
 	@cargo clean
 	@rm -rf $(BUILD_DIR)
 
-.PHONY: elf binary build clean
+all: build
+
+.PHONY: elf binary build clean all
