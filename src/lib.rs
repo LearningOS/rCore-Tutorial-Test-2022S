@@ -102,7 +102,7 @@ const MAX_SYSCALL_NUM: usize = 500;
 #[derive(Debug)]
 pub struct TaskInfo {
     pub status: TaskStatus,
-    pub syscall_times: [usize; MAX_SYSCALL_NUM],
+    pub syscall_times: [u32; MAX_SYSCALL_NUM],
     pub time: usize,
 }
 
