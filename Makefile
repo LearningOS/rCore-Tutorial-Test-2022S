@@ -9,14 +9,14 @@ PY := python3
 
 BASE ?= 0
 CHAPTER ?= 0
-TEST ?= CHAPTER
+TEST ?= $(CHAPTER)
 
 ifeq ($(TEST), 0) # No test, deprecated, previously used in v3
 	APPS :=  $(filter-out $(wildcard $(APP_DIR)/ch*.rs), $(wildcard $(APP_DIR)/*.rs))
 else ifeq ($(TEST), 1) # All test
 	APPS :=  $(wildcard $(APP_DIR)/ch*.rs)
 else
-	TESTS := $(shell seq ${BASE} ${TEST})
+	TESTS := $(shell seq $(BASE) $(TEST))
 	ifeq ($(BASE), 0) # Normal tests only
 		APPS := $(foreach T, $(TESTS), $(wildcard $(APP_DIR)/ch$(T)_*.rs))
 	else ifeq ($(BASE), 1) # Basic tests only
