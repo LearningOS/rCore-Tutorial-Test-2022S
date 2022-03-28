@@ -12,5 +12,5 @@ pub fn main() -> ! {
     unsafe {
         core::arch::asm!("csrr {}, sstatus", out(reg) sstatus);
     }
-    panic!("(-_-) I get sstatus:{:x}\n", sstatus);
+    panic!("(-_-) I get sstatus:{:x}\nFAIL: T.T\n", sstatus);
 }
