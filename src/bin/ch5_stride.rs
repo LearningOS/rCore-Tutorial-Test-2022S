@@ -13,7 +13,7 @@ static TESTS: &[&str] = &[
 ];
 
 
-use user_lib::{spawn, waitpid};
+use user_lib::{spawn, waitpid, set_priority};
 
 #[no_mangle]
 pub fn main() -> i32 {
@@ -23,7 +23,7 @@ pub fn main() -> i32 {
         pid[i] = spawn(*test);
         i += 1;
     }
-    i = 0;
+    set_priority(4);
     for i in 0..6{
         let mut xstate: i32 = Default::default();
         let wait_pid = waitpid(pid[i] as usize, &mut xstate);
