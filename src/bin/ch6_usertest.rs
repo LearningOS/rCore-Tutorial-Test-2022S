@@ -15,10 +15,9 @@ static TESTS: &[&str] = &[
     "ch5_unmap2\0",
     "ch5_spawn0\0",
     "ch5_spawn1\0",
-    "ch6_mail0\0",
-    "ch6_mail1\0",
-    "ch6_mail2\0",
-    "ch6_mail3\0",
+    "ch6_file0\0",
+    "ch6_file1\0",
+    "ch6_file2\0",
 ];
 
 use user_lib::{spawn, waitpid};
