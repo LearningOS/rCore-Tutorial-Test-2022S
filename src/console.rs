@@ -43,10 +43,11 @@ impl Write for ConsoleBuffer {
 
 #[allow(unused)]
 pub fn print(args: fmt::Arguments) {
-    let mut buf = CONSOLE_BUFFER.lock();
-    // buf.write_fmt(args).unwrap();
-    // BUG FIX: 关闭 stdout 后，本函数不能触发 panic，否则会造成死锁
-    buf.write_fmt(args);
+    let result = {
+        let mut buf = CONSOLE_BUFFER.lock();
+        buf.write_fmt(args)
+    }; // `MutexGuard` dropped here
+    result.unwrap(); // `panic!` 再次调用 `print` 时 `CONSOLE_BUFFER` 没有被占用，不会死锁。
 }
 
 #[macro_export]
