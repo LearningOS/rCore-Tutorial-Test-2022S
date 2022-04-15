@@ -24,8 +24,9 @@ static TESTS: &[&str] = &[
     "ch5_spawn0\0",
     "ch5_spawn1\0",
     "ch5_setprio\0",
-    "ch5_stride\0",
+    // "ch5_stride\0",
 ];
+static STEST: &str = "ch5_stride\0";
 
 use user_lib::{spawn, waitpid};
 
@@ -33,17 +34,29 @@ use user_lib::{spawn, waitpid};
 
 #[no_mangle]
 pub fn main() -> i32 {
-    for test in TESTS {
+    let mut pid = [0; 20];
+    for (i, &test) in TESTS.iter().enumerate() {
         println!("Usertests: Running {}", test);
-        let pid = spawn(*test);
-        let mut xstate: i32 = Default::default();
-        let wait_pid = waitpid(pid as usize, &mut xstate);
-        assert_eq!(pid, wait_pid);
+        pid[i] = spawn(test);
+    }
+    let mut xstate: i32 = Default::default();
+    for (i, &test) in TESTS.iter().enumerate() {
+        let wait_pid = waitpid(pid[i] as usize, &mut xstate);
+        assert_eq!(pid[i], wait_pid);
         println!(
             "\x1b[32mUsertests: Test {} in Process {} exited with code {}\x1b[0m",
-            test, pid, xstate
+            test, pid[i], xstate
         );
     }
+    println!("Usertests: Running {}", STEST);
+    let spid = spawn(STEST);
+    xstate = Default::default();
+    let wait_pid = waitpid(spid as usize, &mut xstate);
+    assert_eq!(spid, wait_pid);
+    println!(
+        "\x1b[32mUsertests: Test {} in Process {} exited with code {}\x1b[0m",
+        STEST, spid, xstate
+    );
     println!("ch5 Usertests passed!");
     0
 }
