@@ -25,13 +25,13 @@ pub fn main() -> i32 {
         let c = getchar();
         match c {
             LF | CR => {
-                println!("\n");
+                print!("\n");
                 if !line.is_empty() {
                     line.push('\0');
                     let pid = fork();
                     if pid == 0 {
                         // child process
-                        if exec(line.as_str()) == -1 {
+                        if exec(line.as_str(), &[0 as *const u8]) == -1 {
                             println!("Error when executing!");
                             return -4;
                         }
