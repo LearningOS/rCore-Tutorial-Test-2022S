@@ -14,9 +14,8 @@ use user_lib::{
 use alloc::string::String;
 
 #[no_mangle]
-pub fn main(argc: usize, argv: &[&str]) -> i32 {
-    assert!(argc == 2);
-    let fd = open(argv[1], OpenFlags::RDONLY);
+pub fn main() -> i32 {
+    let fd = open("filea\0", OpenFlags::RDONLY);
     if fd == -1 {
         panic!("Error occured when opening file");
     }
