@@ -28,6 +28,7 @@ static TESTS: &[&str] = &[
     "ch6_file0\0",
     "ch6_file1\0",
     "ch6_file2\0",
+    "ch6_file3\0",
 ];
 
 use user_lib::{spawn, waitpid};
