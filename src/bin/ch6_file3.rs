@@ -3,7 +3,7 @@
 
 #[macro_use]
 extern crate user_lib;
-use user_lib::{close, fstat, link, open, read, unlink, write, OpenFlags, Stat};
+use user_lib::{close, open, unlink, write, OpenFlags};
 
 /// 测试大量 open/unlink，输出 Test mass open/unlink OK! 就算正确。
 
