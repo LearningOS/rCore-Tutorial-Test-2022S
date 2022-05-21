@@ -342,6 +342,9 @@ pub fn semaphore_create(res_count: usize) -> isize {
 pub fn semaphore_up(sem_id: usize) {
     sys_semaphore_up(sem_id);
 }
+pub fn enable_deadlock_detect(enabled: bool) -> isize {
+    sys_enable_deadlock_detect(enabled as usize)
+}
 pub fn semaphore_down(sem_id: usize) -> isize {
     sys_semaphore_down(sem_id)
 }
