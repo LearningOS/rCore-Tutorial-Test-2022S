@@ -14,7 +14,7 @@ use user_lib::{thread_create, waittid};
 const N: usize = 5;
 const ROUND: usize = 4;
 // A round: think -> wait for forks -> eat
-const GRAPH_SCALE: usize = 100;
+const GRAPH_SCALE: usize = 10;
 
 fn get_time_u() -> usize {
     get_time() as usize
@@ -22,11 +22,11 @@ fn get_time_u() -> usize {
 
 // Time unit: ms
 const ARR: [[usize; ROUND * 2]; N] = [
-    [700, 800, 1000, 400, 500, 600, 200, 400],
-    [300, 600, 200, 700, 1000, 100, 300, 600],
-    [500, 200, 900, 200, 400, 600, 1200, 400],
-    [500, 1000, 600, 500, 800, 600, 200, 900],
-    [600, 100, 600, 600, 200, 500, 600, 200],
+    [70, 80, 100, 40, 50, 60, 20, 40],
+    [30, 60, 20, 70, 100, 10, 30, 60],
+    [50, 20, 90, 20, 40, 60, 120, 40],
+    [50, 100, 60, 50, 80, 60, 20, 90],
+    [60, 10, 60, 60, 20, 50, 60, 20],
 ];
 static mut THINK: [[usize; ROUND * 2]; N] = [[0; ROUND * 2]; N];
 static mut EAT: [[usize; ROUND * 2]; N] = [[0; ROUND * 2]; N];
@@ -37,7 +37,6 @@ fn philosopher_dining_problem(id: *const usize) {
     let right = if id == N - 1 { 0 } else { id + 1 };
     let min = if left < right { left } else { right };
     let max = left + right - min;
-    println!("phil thread {}", id);
     for round in 0..ROUND {
         // thinking
         unsafe {
@@ -77,7 +76,6 @@ pub fn main() -> i32 {
             &ids.as_slice()[i] as *const _ as usize,
         ));
     }
-    println!("Phil threads created");
     for tid in v.iter() {
         waittid(*tid as usize);
     }
