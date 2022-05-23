@@ -23,8 +23,6 @@ static TESTS: &[&str] = &[
     "ch5b_forktest2\0",
     "ch5_spawn0\0",
     "ch5_spawn1\0",
-    "ch5_setprio\0",
-    "ch5_stride\0",
     "ch6_file0\0",
     "ch6_file1\0",
     "ch6_file2\0",
